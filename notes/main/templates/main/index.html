@@ -1,0 +1,39 @@
+{% load static %}
+
+<html>
+<head>
+    <title>{% if user.is_authenticated %}Notes{% else %}LOGIN ERROR{% endif %}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+</head>
+<body>
+<center>
+    <a href="{% url 'index' %}" style="text-decoration: none"><div class="header">Notes</div></a>
+</center>
+{% if user.is_authenticated %}
+<div class="container">
+    {% block content %}
+    {% endblock %}
+
+</div>
+    <div class="container">
+    <div class="row" style="margin-top: 5px; border-radius: 5px;">
+    <div class="col">
+        You login as <span style="font-size: 20px;
+    border:2px dashed lightskyblue;">{{ user.username }}</span>.<br>
+        <a href="{% url 'logout' %}">logout</a>?
+    </div>
+    </div>
+</div>
+{% else %}
+<div class="container">
+    <div class="row" style="border-radius: 5px;">
+        <div class="col mg d-flex justify-content-center" style="font-size:30px;">
+            You must to <a href="{% url 'login' %}"><button style="font-size: 25px;" class="btn btn-info">sign in</button></a> or you can <a href="{% url 'register' %}"><button style="font-size: 25px;" class="btn btn-success" onclick="window.location.href={% url 'register' %}">sign up</button></a>.
+        </div>
+    </div>
+</div>
+{% endif %}
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+</body>
+</html>

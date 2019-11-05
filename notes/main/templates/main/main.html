@@ -1,0 +1,64 @@
+{% extends 'main/index.html' %}
+{% block content %}
+    <div class="row" >
+<div class="col-9 mg" >
+    <div class="form-group">
+    <input name="note" required="" id="id_note" type="text" class="note form-control" value="Enter your notes." style="height: 60px; font-size: 30px;" onfocus="this.value=''">
+    </div>
+</div>
+        <div class="col mg"><button id="Click" class="btn add_button btn-info " style="font-size: 30px;">SUBMIT</button></div>
+</div>
+<div style="width: 100%;height: 2px; background-color: lightgray"></div>
+    <div class="row ">
+            <div class="col mg d-flex" style="margin-left: 20px;">
+            <ul>
+            {% for note in notes %}
+                <li class='{{note.id}}'><a id="note" href="">{{note.note}}</a></li>
+            {% endfor %}
+            </ul>
+    </div>
+    </div>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.js"></script>
+    <script>
+        $('.add_button').on('click', function(){
+            var note = $('input:text').val()
+            $.ajax({
+                url: {% url 'add_note' %},
+                data:{
+                    'note':note
+                },
+                dataType: 'json',
+                success: function(data){
+                    $('ul').append("<li><a id='note' href='' data-id="+data.id+">"+$('input:text').val()+"</a></li>")
+                    $('input:text').val("")
+
+}
+})
+        })
+        $('li').on('click', function(e){
+            var id_of_el = $(this).attr('class')
+            var status = 0;
+            console.log(id_of_el);
+            e.preventDefault()
+            var id = $('#note').attr('data-id')
+            $.ajax({
+                method:'post',
+                url: {%url 'remove'%},
+                data:{
+                    'csrfmiddlewaretoken': '{{csrf_token}}',
+                    'id': id_of_el,
+                },
+                success: function(){
+                    $('.'+id_of_el).remove()
+                }
+            })
+        })
+addEventListener('keydown',function(k){
+    switch (k.keyCode) {
+        case 13:
+        document.getElementById("Click").click();
+            break;
+    }
+})
+    </script>
+{% endblock %}

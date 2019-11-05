@@ -1,0 +1,12 @@
+{% extends 'registration/login.html' %}
+{% block content %}
+    <div class="col mg d-flex justify-content-center" >
+    <form action="{% if form.valid %}{% url 'login' %}{% endif %}" method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+        <center>
+      <button type="submit" class="btn btn-info">SIGN UP</button>
+            </center>
+    </form>
+    </div>
+  {% endblock %}

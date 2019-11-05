@@ -1,0 +1,33 @@
+body{
+    background-color: dimgray;
+}
+.header{
+    font-size:100px;
+    font-family: "Liberation Sans";
+    color:lightskyblue;
+}
+.row{
+    background-color: lightyellow;
+}
+.mg{
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.empty-msg{
+    font-size:30px;
+    color:indianred;
+
+}
+.username{
+    text-decoration: underline;
+    border:2px dashed lightskyblue;
+
+}
+
+.note{
+    font-size: 30px;
+    background-color: black;
+}
+li{
+    font-size: 30px;
+}

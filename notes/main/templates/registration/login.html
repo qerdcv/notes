@@ -1,0 +1,50 @@
+{% load static %}
+{% load crispy_forms_tags %}
+<html>
+<head>
+    <title>{% if user.is_authenticated %}Notes{% else %}LOGIN ERROR{% endif %}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+</head>
+<body>
+<center>
+    <a href="{% url 'index' %}" style="text-decoration: none"><div class="header">Notes</div></a>
+</center>
+<div class="container">
+<div class="row" style="border-radius: 5px;">
+{% block content %}
+    <div class="col mg d-flex justify-content-center">
+{% if form.errors %}
+  <p>Your username and password didn't match. Please try again.</p>
+{% endif %}
+
+{% if next %}
+  {% if user.is_authenticated %}
+    <p>Your account doesn't have access to this page. To proceed,
+    please login with an account that has access.</p>
+  {% else %}
+    <p>Please login to see this page.</p>
+  {% endif %}
+{% endif %}
+
+<form method="post" action="{% url 'login' %}">
+{% csrf_token %}
+
+
+{{ form.username.label_tag }}
+    <input type="text" class="form-control" name="username" autofocus="" required="" id="id_username">
+
+  {{ form.password.label_tag }}
+  <input type="password" class="form-control" name="password" required="" id="id_password">
+
+<div class="row">
+    <div class="col mg d-flex justify-content-center"><input style="font-size: 20px; margin-bottom:-38px; " class="btn btn-info" type="submit" value="login" />
+<input type="hidden" name="next" value="{{ next }}" /></div>
+</div>
+
+</form></div>
+{% endblock %}
+</div>
+</div>
+</body>
+</html>
