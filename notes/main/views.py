@@ -39,12 +39,15 @@ class UserCreating(generic.FormView):
         return reverse('login')
 
 
-def add_note(request):
-    from django.core import serializers
-    note = request.GET.get('note')
-    Notes.objects.create(user=request.user, note=note)
-    return JsonResponse({'id': Notes.objects.filter(user=request.user).last().id})
+class AddNote(generic.View):
 
-def remove(request):
-    Notes.objects.filter(user=request.user, id=request.POST['id']).delete()
-    return JsonResponse({})
+    def post(self, request, *args, **kwargs):
+        obj = Notes.objects.create(user=self.request.user, note=self.request.POST['note'])
+        return JsonResponse({'status': 'OK', 'id': obj.id})
+
+
+class RemoveNote(generic.View):
+
+    def post(self, request, *args, **kwargs):
+        Notes.objects.get(id=self.request.POST['id']).delete()
+        return JsonResponse({})

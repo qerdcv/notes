@@ -1,64 +1,74 @@
 {% extends 'main/index.html' %}
+
+{% load static %}
 {% block content %}
-    <div class="row" >
-<div class="col-9 mg" >
-    <div class="form-group">
-    <input name="note" required="" id="id_note" type="text" class="note form-control" value="Enter your notes." style="height: 60px; font-size: 30px;" onfocus="this.value=''">
+<div id="notes_app">
+<div class="row">
+    <div class="col-9 mg">
+        <div class="form-group">
+            <input name="note" type="text" class="form-control" v-model="note" style="height: 60px; font-size: 30px;"
+            placeholder="Enter your note here">
+        </div>
     </div>
-</div>
-        <div class="col mg"><button id="Click" class="btn add_button btn-info " style="font-size: 30px;">SUBMIT</button></div>
+    <div class="col mg">
+        <button id="Click"class="btn add_button btn-info " style="font-size: 30px;">SUBMIT</button>
+    </div>
 </div>
 <div style="width: 100%;height: 2px; background-color: lightgray"></div>
-    <div class="row ">
-            <div class="col mg d-flex" style="margin-left: 20px;">
-            <ul>
+<div class="row ">
+    <div class="col mg d-flex" style="margin-left: 20px;">
+        <ul>
             {% for note in notes %}
-                <li class='{{note.id}}'><a id="note" href="">{{note.note}}</a></li>
+            <li class='notes' data-id="{{ note.id }}"><p id="note"><strong>{{note.note}}</strong></p></li>
             {% endfor %}
-            </ul>
+        </ul>
     </div>
-    </div>
-    <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.js"></script>
-    <script>
-        $('.add_button').on('click', function(){
-            var note = $('input:text').val()
-            $.ajax({
-                url: {% url 'add_note' %},
-                data:{
-                    'note':note
-                },
-                dataType: 'json',
-                success: function(data){
-                    $('ul').append("<li><a id='note' href='' data-id="+data.id+">"+$('input:text').val()+"</a></li>")
-                    $('input:text').val("")
-
-}
-})
-        })
-        $('li').on('click', function(e){
-            var id_of_el = $(this).attr('class')
-            var status = 0;
-            console.log(id_of_el);
-            e.preventDefault()
-            var id = $('#note').attr('data-id')
-            $.ajax({
-                method:'post',
-                url: {%url 'remove'%},
-                data:{
-                    'csrfmiddlewaretoken': '{{csrf_token}}',
-                    'id': id_of_el,
-                },
-                success: function(){
-                    $('.'+id_of_el).remove()
-                }
-            })
-        })
-addEventListener('keydown',function(k){
-    switch (k.keyCode) {
-        case 13:
-        document.getElementById("Click").click();
-            break;
+</div>
+</div>
+    <script src="{% static 'js/jquery-3.4.1.min.js' %}">
+    </script>
+<script>
+$('.add_button').click(function () {
+    $.ajax({
+        method: 'post',
+        url: {% url 'add_note' %},
+        data: {
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            note: $('input[name=note]').val(),
+        },
+        success: function (data) {
+            let li = "<li class='notes' data-id='"+data.id+"'><p id='note'><strong>"+$('input[name=note]').val()+"</strong></p></li>";
+            $('ul').append(li);
+            $('input[name=note]').val('');
+        },
+        error: function () {
+            alert('ERROR');
+        }
+    })
+});
+$('ul').on("click", "li.notes" ,function () {
+    let id = $(this).attr('data-id')
+    $.ajax({
+        url:{% url 'remove' %},
+        method: 'post',
+        data:{
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            id: $(this).attr('data-id')
+        },
+        success: function () {
+            $('li[data-id='+id+']').remove()
+        },
+        error: function () {
+            alert('ERROR');
+        }
+    })
+});
+addEventListener('keydown', function (key) {
+    if(key.keyCode == 13){
+        if($('input[name=note]').val().length != 0) {
+            $('#Click').click();
+        }
     }
 })
-    </script>
+</script>
 {% endblock %}
