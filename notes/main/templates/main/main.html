@@ -2,73 +2,83 @@
 
 {% load static %}
 {% block content %}
-<div id="notes_app">
-<div class="row">
-    <div class="col-9 mg">
-        <div class="form-group">
-            <input name="note" type="text" class="form-control" v-model="note" style="height: 60px; font-size: 30px;"
-            placeholder="Enter your note here">
+    <div id="notes_app">
+        <div class="row">
+            <div class="col-9 mg">
+                <div class="form-group">
+                    <input name="note" type="text" class="form-control" v-model="note"
+                           style="height: 60px; font-size: 30px;"
+                           placeholder="Enter your note here">
+                </div>
+            </div>
+            <div class="col mg">
+                <button id="Click" class="btn add_button btn-info " style="font-size: 30px;">SUBMIT</button>
+            </div>
+        </div>
+        <div style="width: 100%;height: 2px; background-color: lightgray"></div>
+        <div class="row ">
+            <div class="col mg d-flex" style="margin-left: 20px;">
+                <ul>
+                    {% for note in notes %}
+                        <li class='notes' data-id="{{ note.id }}"><p id="note"><strong>{{ note.note }}</strong></p></li>
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
     </div>
-    <div class="col mg">
-        <button id="Click"class="btn add_button btn-info " style="font-size: 30px;">SUBMIT</button>
-    </div>
-</div>
-<div style="width: 100%;height: 2px; background-color: lightgray"></div>
-<div class="row ">
-    <div class="col mg d-flex" style="margin-left: 20px;">
-        <ul>
-            {% for note in notes %}
-            <li class='notes' data-id="{{ note.id }}"><p id="note"><strong>{{note.note}}</strong></p></li>
-            {% endfor %}
-        </ul>
-    </div>
-</div>
-</div>
     <script src="{% static 'js/jquery-3.4.1.min.js' %}">
     </script>
-<script>
-$('.add_button').click(function () {
-    $.ajax({
-        method: 'post',
-        url: {% url 'add_note' %},
-        data: {
-            csrfmiddlewaretoken: '{{ csrf_token }}',
-            note: $('input[name=note]').val(),
-        },
-        success: function (data) {
-            let li = "<li class='notes' data-id='"+data.id+"'><p id='note'><strong>"+$('input[name=note]').val()+"</strong></p></li>";
-            $('ul').append(li);
-            $('input[name=note]').val('');
-        },
-        error: function () {
-            alert('ERROR');
-        }
-    })
-});
-$('ul').on("click", "li.notes" ,function () {
-    let id = $(this).attr('data-id')
-    $.ajax({
-        url:{% url 'remove' %},
-        method: 'post',
-        data:{
-            csrfmiddlewaretoken: '{{ csrf_token }}',
-            id: $(this).attr('data-id')
-        },
-        success: function () {
-            $('li[data-id='+id+']').remove()
-        },
-        error: function () {
-            alert('ERROR');
-        }
-    })
-});
-addEventListener('keydown', function (key) {
-    if(key.keyCode == 13){
-        if($('input[name=note]').val().length != 0) {
-            $('#Click').click();
-        }
-    }
-})
-</script>
+    <script>
+        $('.add_button').click(function () {
+            let note = $('input[name=note]').val();
+            if (note.length > 0){
+                let data = {
+                    type: "add",
+                    text: note
+                };
+                ws.send(JSON.stringify(data));
+            }else{
+              alert("error, empty input")
+            }
+        });
+        $('ul').on("click", "li.notes", function () {
+            let id = $(this).attr('data-id');
+            data = {
+                type: "delete",
+                id: id,
+            };
+            ws.send(JSON.stringify(data))
+        });
+        addEventListener('keydown', function (key) {
+            if (key.keyCode == 13) {
+                if ($('input[name=note]').val().length != 0) {
+                    $('#Click').click();
+                }
+            }
+        })
+    </script>
+
+    <!-- websocket -->
+    <script>
+        var ht = window.location.host;
+        var url = 'ws://' + ht + '/';
+        var ws = new WebSocket(url);
+        ws.onmessage = function (e) {
+            let data = JSON.parse(e.data);
+            console.log('message', data);
+            if (data['type'] == 'add') {
+                let li = "<li class='notes' data-id='" + data.id + "'><p id='note'><strong>" + data.text + "</strong></p></li>";
+                $('ul').append(li);
+                $('input[name=note]').val('');
+            } else if (data['type'] == 'delete') {
+                $('li[data-id=' + data.id + ']').remove()
+            }
+        };
+        ws.onopen = function (e) {
+            console.log('Websocket open');
+        };
+        ws.onclose = function (e) {
+            console.log('Websocket close')
+        };
+    </script>
 {% endblock %}
