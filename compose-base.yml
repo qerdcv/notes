@@ -4,7 +4,7 @@ services:
   notes:
     container_name: notes
     command: bash -c "python3 /notes/manage.py migrate &&
-                      python3 /notes/manage.py runserver 0.0.0.0:8000"
+                      daphne -b 0.0.0.0 -p 8000 notes.asgi:application"
     ports:
       - "80:8000"
     volumes:
@@ -17,7 +17,7 @@ services:
     container_name: notes_redis
     image: redis:latest
     ports:
-      - "6378:6379"
+      - "6379:6379"
 
   database:
     container_name: notes_database
