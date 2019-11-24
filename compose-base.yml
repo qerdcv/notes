@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  notes:
+    container_name: notes
+    command: bash -c "python3 /notes/manage.py migrate &&
+                      python3 /notes/manage.py runserver 0.0.0.0:8000"
+    ports:
+      - "80:8000"
+    volumes:
+      - ./notes/:/notes/
+    build:
+      dockerfile: Dockerfile
+      context: ./
+
+  redis:
+    container_name: notes_redis
+    image: redis:latest
+    ports:
+      - "6378:6379"
+
+  database:
+    container_name: notes_database
+    image: postgres:9.6
+
+    environment:
+      LC_AL: "en_US.UTF-8"
+      LC_CTYPE: "en_US.UTF-8"
+      POSTGRES_PASSWORD: "notes"
+      POSTGRES_USER: "notes"
+      POSTGRES_DB: "notes"
+      PGDATA: "/var/lib/postgresql/data/db"
+
+    ports:
+      - "5431:5432"
