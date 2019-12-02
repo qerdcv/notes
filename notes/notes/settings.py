@@ -129,6 +129,7 @@ LOGOUT_REDIRECT_URL = '/'
 REGISTER_REDIRECT_URL = '/'
 
 try:
-    from .local import *
+    from .database import *
+    from .logs_conf import *
 except ImportError:
     pass

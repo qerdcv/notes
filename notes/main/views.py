@@ -1,3 +1,5 @@
+import logging
+
 from django.shortcuts import render
 from django.views import generic
 from django.urls import reverse
@@ -6,6 +8,9 @@ from django.contrib.auth.forms import UserCreationForm
 
 from main.forms import AddNoteForm
 from main.models import Notes
+
+
+logger = logging.getLogger(__name__)
 
 
 class Index(generic.FormView):
@@ -33,6 +38,7 @@ class UserCreating(generic.FormView):
 
     def form_valid(self, form):
         form.save()
+        logger.info(form)
         return super().form_valid(form)
 
     def get_success_url(self):
