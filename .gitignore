@@ -1,3 +1,6 @@
 *.log
 .idea
 __pycache__/
+database.py
+debug.py
+logs_conf.py
