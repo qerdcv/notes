@@ -28,57 +28,8 @@
     </div>
     <script src="{% static 'js/jquery-3.4.1.min.js' %}">
     </script>
-    <script>
-        $('.add_button').click(function () {
-            let note = $('input[name=note]').val();
-            if (note.length > 0){
-                let data = {
-                    type: "add",
-                    text: note
-                };
-                ws.send(JSON.stringify(data));
-            }else{
-              alert("error, empty input")
-            }
-        });
-        $('ul').on("click", "li.notes", function () {
-            let id = $(this).attr('data-id');
-            data = {
-                type: "delete",
-                id: id,
-            };
-            ws.send(JSON.stringify(data))
-        });
-        addEventListener('keydown', function (key) {
-            if (key.keyCode == 13) {
-                if ($('input[name=note]').val().length != 0) {
-                    $('#Click').click();
-                }
-            }
-        })
-    </script>
-
     <!-- websocket -->
-    <script>
-        var ht = window.location.host;
-        var url = 'ws://' + ht + '/';
-        var ws = new WebSocket(url);
-        ws.onmessage = function (e) {
-            let data = JSON.parse(e.data);
-            console.log('message', data);
-            if (data['type'] == 'add') {
-                let li = "<li class='notes' data-id='" + data.id + "'><p id='note'><strong>" + data.text + "</strong></p></li>";
-                $('ul').append(li);
-                $('input[name=note]').val('');
-            } else if (data['type'] == 'delete') {
-                $('li[data-id=' + data.id + ']').remove()
-            }
-        };
-        ws.onopen = function (e) {
-            console.log('Websocket open');
-        };
-        ws.onclose = function (e) {
-            console.log('Websocket close')
-        };
-    </script>
+    <script src="{% static 'js/websocket_connection.js' %}"></script>
+    <!--user actions-->
+    <script src="{% static 'js/user_actions.js' %}"></script>
 {% endblock %}

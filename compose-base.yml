@@ -6,12 +6,14 @@ services:
     command: bash -c "python3 /notes/manage.py migrate &&
                       daphne -b 0.0.0.0 -p 8000 notes.asgi:application"
     ports:
-      - "80:8000"
+      - "8000:8000"
     volumes:
       - ./notes/:/notes/
     build:
       dockerfile: Dockerfile
       context: ./
+    links:
+      - database
 
   redis:
     container_name: notes_redis
@@ -22,7 +24,7 @@ services:
   database:
     container_name: notes_database
     image: postgres:9.6
-
+    restart: always
     environment:
       LC_AL: "en_US.UTF-8"
       LC_CTYPE: "en_US.UTF-8"
