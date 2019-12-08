@@ -10,18 +10,24 @@ $('.add_button').click(function () {
       alert("error, empty input")
     }
 });
-$('ul').on("click", "li.notes", function () {
-    let id = $(this).attr('data-id');
-    data = {
-        type: "delete",
+
+$('ul').on("change",'input', function () {
+    let id = $(this).attr('id');
+    let done_status = $(this).prop('checked');
+
+    let data = {
+        type: "change_status",
         id: id,
+        status: done_status,
     };
+
     ws.send(JSON.stringify(data))
 });
+
 addEventListener('keydown', function (key) {
     if (key.keyCode == 13) {
         if ($('input[name=note]').val().length != 0) {
             $('#Click').click();
         }
     }
-})
+});

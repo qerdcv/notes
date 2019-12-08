@@ -4,21 +4,11 @@ var ws = new WebSocket(url);
 
 ws.onmessage = function (e) {
 	let data = JSON.parse(e.data);
-	console.log('message', data);
 	if (data['type'] == 'add') {
-		let li = "<li class='notes' data-id='" + data.id + "'><p id='note'><strong>" + data.text + "</strong></p></li>";
+		let li = "<li><input type='checkbox' id='" + data.id + "' class='notes'><label style='margin-left: 31px' for='" + data.id + "'>" + data.text + "</label></li>";
 		$('ul').append(li);
 		$('input[name=note]').val('');
-	} else if (data['type'] == 'delete') {
-		$('li[data-id=' + data.id + ']').remove()
+	} else if (data['type'] == 'change_status') {
+		$('input[id='+data.id+']').prop('checked', data.status)
 	}
 };
-
-ws.onopen = function (e) {
-    console.log('Websocket open');
-};
-
-ws.onclose = function (e) {
-	console.log('Websocket close')
-};
-

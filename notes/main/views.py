@@ -1,9 +1,7 @@
 import logging
 
-from django.shortcuts import render
 from django.views import generic
 from django.urls import reverse
-from django.http import JsonResponse
 from django.contrib.auth.forms import UserCreationForm
 
 from main.forms import AddNoteForm
@@ -22,7 +20,8 @@ class Index(generic.FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context.update({'notes': Notes.objects.filter(user=self.request.user)})
+        if not self.request.user == 'AnonymousUser':
+            context.update({'notes': Notes.objects.filter(user__username=self.request.user.username).order_by('id')})
         return context
 
     def form_valid(self, form):
@@ -42,17 +41,3 @@ class UserCreating(generic.FormView):
 
     def get_success_url(self):
         return reverse('login')
-
-
-class AddNote(generic.View):
-
-    def post(self, request, *args, **kwargs):
-        obj = Notes.objects.create(user=self.request.user, note=self.request.POST['note'])
-        return JsonResponse({'status': 'OK', 'id': obj.id})
-
-
-class RemoveNote(generic.View):
-
-    def post(self, request, *args, **kwargs):
-        Notes.objects.get(id=self.request.POST['id']).delete()
-        return JsonResponse({})

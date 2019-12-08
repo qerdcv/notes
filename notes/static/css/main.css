@@ -1,33 +1,53 @@
-body{
+body {
     background-color: dimgray;
 }
-.header{
-    font-size:100px;
+
+.header {
+    font-size: 100px;
     font-family: "Liberation Sans";
-    color:lightskyblue;
+    color: lightskyblue;
 }
-.row{
+
+.row {
     background-color: lightyellow;
 }
-.mg{
+
+.mg {
     margin-top: 20px;
     margin-bottom: 20px;
 }
-.empty-msg{
-    font-size:30px;
-    color:indianred;
+
+.empty-msg {
+    font-size: 30px;
+    color: indianred;
 
 }
-.username{
+
+.username {
     text-decoration: underline;
-    border:2px dashed lightskyblue;
+    border: 2px dashed lightskyblue;
 
 }
 
-.note{
+.note {
     font-size: 30px;
     background-color: black;
 }
-li{
-    font-size: 30px;
+
+li {
+    list-style-type: none; /* Убираем маркеры */
+    font-size: 40px;
+
+}
+
+input[type=checkbox] {
+    /* Double-sized Checkboxes */
+    -ms-transform: scale(3); /* IE */
+    -moz-transform: scale(3); /* FF */
+    -webkit-transform: scale(3); /* Safari and Chrome */
+    -o-transform: scale(3); /* Opera */
+    transform: scale(3);
+}
+label{
+    margin-left: 20px;
 }

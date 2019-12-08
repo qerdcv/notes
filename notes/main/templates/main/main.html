@@ -2,34 +2,37 @@
 
 {% load static %}
 {% block content %}
-    <div id="notes_app">
-        <div class="row">
-            <div class="col-9 mg">
-                <div class="form-group">
-                    <input name="note" type="text" class="form-control" v-model="note"
-                           style="height: 60px; font-size: 30px;"
-                           placeholder="Enter your note here">
-                </div>
-            </div>
-            <div class="col mg">
-                <button id="Click" class="btn add_button btn-info " style="font-size: 30px;">SUBMIT</button>
+<div id="notes_app">
+    <div class="row">
+        <div class="col-9 mg">
+            <div class="form-group">
+                <input name="note" type="text" class="form-control" v-model="note"
+                       style="height: 60px; font-size: 30px;"
+                       placeholder="Enter your note here">
             </div>
         </div>
-        <div style="width: 100%;height: 2px; background-color: lightgray"></div>
-        <div class="row ">
-            <div class="col mg d-flex" style="margin-left: 20px;">
-                <ul>
-                    {% for note in notes %}
-                        <li class='notes' data-id="{{ note.id }}"><p id="note"><strong>{{ note.note }}</strong></p></li>
-                    {% endfor %}
-                </ul>
-            </div>
+        <div class="col mg">
+            <button id="Click" class="btn add_button btn-info " style="font-size: 30px;">SUBMIT</button>
         </div>
     </div>
-    <script src="{% static 'js/jquery-3.4.1.min.js' %}">
-    </script>
-    <!-- websocket -->
-    <script src="{% static 'js/websocket_connection.js' %}"></script>
-    <!--user actions-->
-    <script src="{% static 'js/user_actions.js' %}"></script>
+    <div style="width: 100%;height: 2px; background-color: lightgray"></div>
+    <div class="row ">
+        <div class="col mg d-flex" style="margin-left: 20px;">
+            <ul>
+                {% for note in notes %}
+                <li>
+                    <input type="checkbox" {% if note.is_done %} checked {% endif %} id="{{ note.id }}"  class="notes">
+                    <label for="{{ note.id }}">{{ note.note }}</label>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+<script src="{% static 'js/jquery-3.4.1.min.js' %}">
+</script>
+<!-- websocket -->
+<script src="{% static 'js/websocket_connection.js' %}"></script>
+<!--user actions-->
+<script src="{% static 'js/user_actions.js' %}"></script>
 {% endblock %}

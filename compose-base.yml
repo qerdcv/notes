@@ -19,7 +19,7 @@ services:
     container_name: celery_notes
     build:
       context: .
-    command: celery -A notes worker -l info
+    command: celery -beat -A notes worker -l info -E
     depends_on:
       - redis
 

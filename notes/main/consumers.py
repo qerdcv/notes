@@ -36,11 +36,12 @@ class NotesConsumer(AsyncConsumer):
             response_data.update({"type": "add",
                                   "text": data.get("text"),
                                   "id": obj_id})
-        elif data.get('type') == 'delete':
-            await self.delete_note(data.get("id"))
-            logger.info(f'{self.user} delete note from database (note_id:{data.get("id")})')
-            response_data.update({"type": "delete",
-                                  'id': data.get('id')})
+        elif data.get('type') == 'change_status':
+            await self.change_status(data.get("id"), data.get("status"))
+            logger.info(f'{self.user} status of note to {data.get("status")} (note_id:{data.get("id")})')
+            response_data.update({"type": "change_status",
+                                  'id': data.get('id'),
+                                  'status': data.get('status')})
         await self.channel_layer.group_send(
             self.user,
             {
@@ -59,13 +60,15 @@ class NotesConsumer(AsyncConsumer):
 
     @database_sync_to_async
     def save_note(self, user, note_text):
-        obj = Notes.objects.create(user=str(user), note=note_text)
+        obj = Notes.objects.create(user=get_user_model().objects.get(id=user.id), note=note_text)
         obj.save()
         return obj.id
 
     @database_sync_to_async
-    def delete_note(self, pk):
-        Notes.objects.get(id=pk).delete()
+    def change_status(self, pk, status):
+        obj = Notes.objects.get(id=pk)
+        obj.is_done = status
+        obj.save()
 
     async def websocket_disconnect(self, event):
         logger.info(f'{self.user} disconnect to the websocket')

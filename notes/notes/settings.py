@@ -129,16 +129,24 @@ LOGOUT_REDIRECT_URL = '/'
 REGISTER_REDIRECT_URL = '/'
 
 # celery
-BROKER_URL = 'redis://notes_redis:6379'
+BROKER_URL = 'notes_redis'
 CELERY_RESULT_BACKEND = 'redis://notes_redis:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']
-CELERY_TASK_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = ['json']
 CELERY_RESULT_SERIALIZER = 'json'
 
+
+CACHES = {
+    'default': {
+        'BACKEND': 'redis_cache.RedisCache',
+        'LOCATION': '/var/run/redis/redis.sock',
+    },
+}
 
 
 try:
     from .database import *
     from .logs_conf import *
+    from .schedule import *
 except ImportError:
     pass
