@@ -12,8 +12,16 @@ services:
     build:
       dockerfile: Dockerfile
       context: ./
-    links:
+    depends_on:
       - database
+
+  celery:
+    container_name: celery_notes
+    build:
+      context: .
+    command: celery -A notes worker -l info
+    depends_on:
+      - redis
 
   redis:
     container_name: notes_redis

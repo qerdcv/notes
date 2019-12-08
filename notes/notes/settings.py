@@ -128,6 +128,15 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 REGISTER_REDIRECT_URL = '/'
 
+# celery
+BROKER_URL = 'redis://notes_redis:6379'
+CELERY_RESULT_BACKEND = 'redis://notes_redis:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
+
+
 try:
     from .database import *
     from .logs_conf import *
