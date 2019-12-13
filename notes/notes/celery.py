@@ -1,18 +1,15 @@
-from __future__ import absolute_import
-
+from __future__ import absolute_import, unicode_literals
 import os
-
 from celery import Celery
-from celery.schedules import crontab
-from django.conf import settings
-
+from datetime import timedelta
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'notes.settings')
-app = Celery(__name__, backend='redis://localhost', broker='redis:'
-                                                           '//')
 
-app.config_from_object('django.conf:settings')
-app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
+app = Celery('notes', broker='redis://127.0.0.1:6379/0')
+
+app.config_from_object('django.conf:settings', namespace='celery')
+
+app.autodiscover_tasks()
 
 
 @app.task(name="prin_one_more")
@@ -27,9 +24,9 @@ def test():
 
 app.conf.timezone = 'UTC'
 
-CELERY_BEAT_SCHEDULE = {
+app.conf.beat_schedule = {
     'print_smth': {
         'task': 'test_task',
-        'schedule': crontab(),
+        'schedule': timedelta(seconds=1),
     },
 }

@@ -19,7 +19,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklis
 
 # Application definition
-
+SECRET_KEY = "loki super secret key"
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -67,12 +67,12 @@ ASGI_APPLICATION = 'notes.routing.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 #
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
 
 
 CHANNEL_LAYERS = {
@@ -129,11 +129,11 @@ LOGOUT_REDIRECT_URL = '/'
 REGISTER_REDIRECT_URL = '/'
 
 # celery
-BROKER_URL = 'notes_redis'
-CELERY_RESULT_BACKEND = 'redis://notes_redis:6379'
-CELERY_ACCEPT_CONTENT = ['application/json']
-CELERY_TASK_SERIALIZER = ['json']
-CELERY_RESULT_SERIALIZER = 'json'
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
+# CELERY_RESULT_BACKEND = 'redis://notes_redis:6379/0'
+# CELERY_ACCEPT_CONTENT = ['application/json']
+# CELERY_TASK_SERIALIZER = ['json']
+# CELERY_RESULT_SERIALIZER = 'json'
 
 
 CACHES = {
@@ -142,7 +142,7 @@ CACHES = {
         'LOCATION': '/var/run/redis/redis.sock',
     },
 }
-
+DEBUG = True
 
 try:
     from .database import *
