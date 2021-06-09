@@ -1,4 +1,4 @@
-django==2.2.7
+django==2.2.22
 pip==19.3.1
 django-channels==0.7.0
 django-crispy-forms==1.8.1
